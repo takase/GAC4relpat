@@ -1,4 +1,4 @@
-# Learn Gated Additive Composition
+# GAC4relpat
 
 This project contains a program which can train Gated Additive Composition from the paper.
 
@@ -20,7 +20,10 @@ Moreover, if you use not_embedding_train option, you have to prepare the results
 ## Training
 
 ```
-python learn_phrase_composition_tensorflow.py --train_data=training_corpus  --save_path=save_directory_name --vocab=vocabulary_file_name --phrase_data=phrase_data_name --dim=300 --epoch_num=1 --learning_rate=0.0025 --neg=20 --batch_size=5 --window=5 --subsample=1e-5 --composition_function=GAC --model_name=model_name_for_saving --init_word_data=word_vector(syn0)_for_initialization --init_context_data=word_vector(syn1neg)_for_initialization --not_embedding_train
+python learn_phrase_composition_tensorflow.py --train_data=training_corpus  --save_path=save_directory_name --vocab=vocabulary_file_name
+--phrase_data=phrase_data_name --dim=300 --epoch_num=1 --learning_rate=0.0025 --neg=20 --batch_size=5 --window=5
+--subsample=1e-5 --composition_function=GAC --model_name=model_name_for_saving
+--init_word_data=word_vector(syn0)_for_initialization --init_context_data=word_vector(syn1neg)_for_initialization --not_embedding_train
 ```
 
 ## Test
@@ -28,6 +31,8 @@ python learn_phrase_composition_tensorflow.py --train_data=training_corpus  --sa
 test_phrase_composition.py calculates the Spearman's rank correlation between the similarities provided by a test data and the cosine similarities calculated by encoders. Before running test_phrase_composition.py, please prepare a test data. In the test data, constituent words of a phrase are joined to each other by '_'. The relational pattern similarity dataset is [here](https://github.com/takase/relPatSim).
 
 ```
-python test_phrase_composition.py --model_name=trained_model_file_name  --test_data=test_data --setting=training_setting_file_name
+python test_phrase_composition.py
+--model_name=trained_model_file_name  --test_data=test_data
+--setting=training_setting_file_name
 ```
 
