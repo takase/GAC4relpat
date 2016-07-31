@@ -25,7 +25,7 @@ python learn_phrase_composition_tensorflow.py --train_data=training_corpus  --sa
 
 ## Test
 
-test_phrase_composition.py calculates the Spearman's rank correlation between the similarities provided by a test data and the cosine similarities calculated by encoders. Before running test_phrase_composition.py, please prepare a test data. In the test data, constituent words of a phrase are joined to each other by '_'.
+test_phrase_composition.py calculates the Spearman's rank correlation between the similarities provided by a test data and the cosine similarities calculated by encoders. Before running test_phrase_composition.py, please prepare a test data. In the test data, constituent words of a phrase are joined to each other by '_'. The relational pattern similarity dataset is [here](https://github.com/takase/relPatSim).
 
 ```
 python test_phrase_composition.py --model_name=trained_model_file_name  --test_data=test_data --setting=training_setting_file_name
