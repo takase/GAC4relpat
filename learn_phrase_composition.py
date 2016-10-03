@@ -124,6 +124,9 @@ class LearnPhraseComposition(object):
             state_if = tf.Variable(initial_value=tf.random_uniform([dim, dim], -0.5 / dim, 0.5 / dim), name='state_if')
             bias_if = tf.Variable(initial_value=tf.zeros([dim], tf.float32), name='bias_if')
             initial_state = tf.zeros([batch_size, dim], tf.float32)
+        elif composition_function == 'CNN':
+            weight_conv = tf.Variable(initial_value=tf.random_uniform([3, dim, 1, dim], -0.5 / dim, 0.5 / dim), name='weight_conv')
+            bias_conv = tf.Variable(initial_value=tf.zeros([dim], tf.float32), name='bias_conv')
         for i in xrange(2, phrase_max_size+1):
             phrase_holder = tf.placeholder(tf.int32, [batch_size, i], '%s_word_holder'%i)
             holder[i] = phrase_holder
@@ -143,6 +146,11 @@ class LearnPhraseComposition(object):
                     forget_gate = tf.sigmoid(tf.matmul(input_embed, word_if) + tf.matmul(state, state_if) + bias_if)
                     state = tf.tanh(tf.mul(input_gate, input_embed) + tf.mul(forget_gate, state))
                 output = state
+            elif composition_function == 'CNN':
+                embed = tf.pad(tf.reshape(embed, [batch_size, i, dim, 1]), [[0, 0], [1, 1], [0, 0], [0, 0]], mode='CONSTANT') #padding by zero vector
+                conv = tf.tanh(tf.nn.conv2d(embed, weight_conv, [1, 1, dim, 1], 'SAME') + bias_conv)
+                max_pooled = tf.nn.max_pool(conv, [1, i+2, 1, 1], [1, i+2, 1, 1], 'SAME')
+                output = tf.reshape(max_pooled, [batch_size, dim])
             composed[i] = output
         return holder, composed
 
