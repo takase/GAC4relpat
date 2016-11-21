@@ -34,6 +34,7 @@ flags.DEFINE_integer('batch_size', 5, 'Size of a minibatch')
 flags.DEFINE_integer('window', 5, 'The window size')
 flags.DEFINE_float('subsample', 1e-5, 'The subsample threshold for word occurrence')
 flags.DEFINE_string('composition_function', 'RNN', 'Specify the type of composition function')
+flags.DEFINE_integer('seed', 0, 'Specify the number of random seed')
 
 
 FLAGS = flags.FLAGS
@@ -61,6 +62,7 @@ class Options(object):
         self.window = FLAGS.window
         self.subsample = FLAGS.subsample
         self.composition_function = FLAGS.composition_function
+        self.seed = FLAGS.seed
 
 
 class LearnPhraseComposition(object):
@@ -102,7 +104,7 @@ class LearnPhraseComposition(object):
         one_word_holder = tf.placeholder(tf.int32, [batch_size, 1], '1_word_holder')
         holder[1] = one_word_holder
         one_word_holder = tf.reshape(one_word_holder, [batch_size])
-        if embedding_train:
+        if embedding_train and composition_function != 'Add':
             one_word_embed = tf.tanh(tf.nn.embedding_lookup(self._embed, one_word_holder))
         else:
             one_word_embed = tf.nn.embedding_lookup(self._embed, one_word_holder)
@@ -151,6 +153,8 @@ class LearnPhraseComposition(object):
                 conv = tf.tanh(tf.nn.conv2d(embed, weight_conv, [1, 1, dim, 1], 'SAME') + bias_conv)
                 max_pooled = tf.nn.max_pool(conv, [1, i+2, 1, 1], [1, i+2, 1, 1], 'SAME')
                 output = tf.reshape(max_pooled, [batch_size, dim])
+            elif composition_function == 'Add':
+                output = tf.reduce_mean(embed, 1)
             composed[i] = output
         return holder, composed
 
@@ -290,6 +294,7 @@ def main(_):
         sys.exit(1)
     opts = Options()
     with tf.Graph().as_default(), tf.Session() as session:
+        tf.set_random_seed(opts.seed)
         with tf.device('/cpu:0'):
             #construct model class (building graph)
             model = LearnPhraseComposition(opts, session)

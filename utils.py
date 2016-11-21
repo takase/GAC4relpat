@@ -163,9 +163,9 @@ def read_setting(filename):
         elif line.startswith('Dim:'):
             setting_info[line.strip().split(' ')[0][:-1]] = int(line.strip().split(' ')[1])
         elif line.startswith('Phrase_reverse:'):
-            setting_info[line.strip().split(' ')[0][:-1]] = bool(line.strip().split(' ')[1])
+            setting_info[line.strip().split(' ')[0][:-1]] = (line.strip().split(' ')[1] == 'True')
         elif line.startswith('Embed_train:'):
-            setting_info[line.strip().split(' ')[0][:-1]] = bool(line.strip().split(' ')[1])
+            setting_info[line.strip().split(' ')[0][:-1]] = (line.strip().split(' ')[1] == 'True')
         elif line.startswith('Id:'):
             index, word, freq = line.strip().split('\t')
             index = int(index[4:])

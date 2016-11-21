@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import sys
 import numpy as np
 import scipy.stats as stats
 import tensorflow as tf
@@ -44,6 +45,7 @@ def main(_):
         sys.exit(1)
     opts = Options()
     word_freq, word_id, setting_info = utils.read_setting(opts.setting)
+    id_word = {index:word for word, index in word_id.iteritems()}
     phrase_test_data, phrase_max_size = utils.read_phrase_test_data(opts.test_data, word_id, setting_info['Phrase_reverse'])
     with tf.Graph().as_default(), tf.Session() as session:
         with tf.device('/cpu:0'):
